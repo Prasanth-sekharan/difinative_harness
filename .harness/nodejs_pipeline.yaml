@@ -1,0 +1,37 @@
+pipeline:
+  name: nodejs_pipeline
+  identifier: nodejs_pipeline
+  projectIdentifier: Nodejs_Project
+  orgIdentifier: default
+  tags: {}
+  properties:
+    ci:
+      codebase:
+        connectorRef: account.Github
+        repoName: Simple-Node-App
+        build: <+input>
+  stages:
+    - stage:
+        name: nodejs_stage
+        identifier: nodejs_stage
+        description: ""
+        type: CI
+        spec:
+          cloneCodebase: true
+          platform:
+            os: Linux
+            arch: Amd64
+          runtime:
+            type: Docker
+            spec: {}
+          execution:
+            steps:
+              - step:
+                  type: BuildAndPushDockerRegistry
+                  name: BuildAndPushDockerRegistry_1
+                  identifier: BuildAndPushDockerRegistry_1
+                  spec:
+                    connectorRef: dockerhub_connector
+                    repo: prasanthsekharan/harness
+                    tags:
+                      - v1
