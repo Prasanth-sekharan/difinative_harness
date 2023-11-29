@@ -1,0 +1,47 @@
+pipeline:
+  name: nodejs_pipeline
+  identifier: nodejs_pipeline
+  projectIdentifier: default_project
+  orgIdentifier: default
+  tags: {}
+  properties:
+    ci:
+      codebase:
+        connectorRef: harnessgitconnector
+        repoName: Simple-Node-App
+        build: <+input>
+  stages:
+    - stage:
+        name: nodejs_stage
+        identifier: nodejs_stage
+        description: ""
+        type: CI
+        spec:
+          cloneCodebase: true
+          platform:
+            os: Linux
+            arch: Amd64
+          runtime:
+            type: Docker
+            spec: {}
+          execution:
+            steps:
+              - step:
+                  type: BuildAndPushDockerRegistry
+                  name: BuildAndPushDockerRegistry_1
+                  identifier: BuildAndPushDockerRegistry_1
+                  spec:
+                    connectorRef: docker
+                    repo: harness
+                    tags:
+                      - v1
+        delegateSelectors:
+          - helm-delegate
+        when:
+          pipelineStatus: Success
+        failureStrategies:
+          - onFailure:
+              errors:
+                - Unknown
+              action:
+                type: Retry
